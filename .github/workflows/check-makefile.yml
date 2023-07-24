@@ -2,9 +2,9 @@ name: Makefile 检查
 
 on:
   push:
-    branches: [$default_branch, $protected-branches]
+    branches: ["master", "beta", "stable"]
   pull_request:
-    branches: [$default_branch, $protected-branches]
+    branches: ["master", "beta", "stable"]
 
   workflow_dispatch:
 
