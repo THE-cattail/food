@@ -1,0 +1,82 @@
+name: Rust 项目检查
+
+on:
+  push:
+    branches: [$default_branch, $protected-branches]
+  pull_request:
+    branches: [$default_branch, $protected-branches]
+
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    name: nightly 环境测试
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          components: rustfmt, clippy, clippy-sarif sarif-fmt
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: check --verbose --all
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt --verbose --all -- --check
+
+      - uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --verbose --all -- -D warning
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clippy --all-features --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
+
+      - uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: rust-clippy-results.sarif
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test --verbose
+
+      - uses: actions-rs/tarpaulin@v0.1
+        with:
+          args: --verbose --all
+          token: ${{secrets.CODECOV_TOKEN}}
+
+      - uses: actions-rs/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: orf/cargo-bloat-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  stable:
+    name: stable 环境测试
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: check --verbose --all
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test --verbose

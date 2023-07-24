@@ -1,0 +1,32 @@
+name: 通用检查
+
+on:
+  push:
+    branches: [$default_branch, $protected-branches]
+  pull_request:
+    branches: [$default_branch, $protected-branches]
+
+  workflow_dispatch:
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --debug --only-verified
+
+      - uses: codacy/codacy-analysis-cli-action@master
+
+      - uses: github/codeql-action/init@v2
+      - uses: github/codeql-action/autobuild@v2
+      - uses: github/codeql-action/analyze@v2
+
+      - uses: actions/dependency-review-action@v3
+
+      - uses: microsoft/DevSkim-Action@v1
+      - uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: devskim-results.sarif
