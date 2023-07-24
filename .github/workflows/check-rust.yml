@@ -2,9 +2,9 @@ name: Rust 项目检查
 
 on:
   push:
-    branches: [$default_branch, $protected-branches]
+    branches: ["master", "beta", "stable"]
   pull_request:
-    branches: [$default_branch, $protected-branches]
+    branches: ["master", "beta", "stable"]
 
   workflow_dispatch:
 
@@ -22,7 +22,7 @@ jobs:
         with:
           profile: minimal
           toolchain: nightly
-          components: rustfmt, clippy, clippy-sarif sarif-fmt
+          components: check, rustfmt, clippy
 
       - uses: actions-rs/cargo@v1
         with:
@@ -72,6 +72,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
+          components: check, rustfmt, clippy
 
       - uses: actions-rs/cargo@v1
         with:
