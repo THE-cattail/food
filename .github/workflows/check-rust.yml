@@ -20,13 +20,15 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
           toolchain: nightly
+          default: true
+          profile: minimal
           components: rustfmt, clippy
 
       - uses: actions-rs/cargo@v1
         with:
-          command: fmt --verbose --all -- --check
+          command: fmt
+          args: --verbose --all -- --check
 
       - uses: actions-rs/clippy-check@v1
         with:
@@ -35,15 +37,8 @@ jobs:
 
       - uses: actions-rs/cargo@v1
         with:
-          command: clippy --all-features --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
-
-      - uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: rust-clippy-results.sarif
-
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test --verbose
+          command: test
+          args: --verbose
 
       - uses: actions-rs/tarpaulin@v0.1
         with:
@@ -69,10 +64,11 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
           toolchain: stable
-          components: rustfmt, clippy
+          default: true
+          profile: minimal
 
       - uses: actions-rs/cargo@v1
         with:
-          command: test --verbose
+          command: test
+          args: --verbose
