@@ -42,6 +42,7 @@ jobs:
 
       - uses: actions-rs/tarpaulin@v0.1
         with:
+          version: 0.15.0
           args: --verbose --all
 
       - uses: codecov/codecov-action@v1
@@ -49,10 +50,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - uses: actions-rs/audit-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: orf/cargo-bloat-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
