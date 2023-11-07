@@ -71,11 +71,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-          components: check, rustfmt, clippy
-
-      - uses: actions-rs/cargo@v1
-        with:
-          command: check --verbose --all
+          components: rustfmt, clippy
 
       - uses: actions-rs/cargo@v1
         with:
