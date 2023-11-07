@@ -24,3 +24,38 @@ where
 pub trait ConfigPathGetter {
     fn config_path(&self) -> &Path;
 }
+
+#[cfg(test)]
+mod tests {
+    use std::path::{Path, PathBuf};
+
+    use clap::Parser;
+
+    use super::ConfigPathGetter;
+
+    #[derive(Parser)]
+    struct Args {
+        #[arg(long)]
+        config: PathBuf,
+        #[arg(long)]
+        version: Option<bool>,
+
+        content: Option<String>,
+    }
+
+    impl ConfigPathGetter for Args {
+        fn config_path(&self) -> &Path {
+            &self.config
+        }
+    }
+
+    const TEST_ARGS: [&str; 3] = ["food", "--config", "./config.toml"];
+
+    #[test]
+    fn config_path_getter() {
+        let args = Args::parse_from(TEST_ARGS);
+        let mut path = PathBuf::from(".");
+        path.push("config.toml");
+        assert_eq!(args.config_path(), path);
+    }
+}
