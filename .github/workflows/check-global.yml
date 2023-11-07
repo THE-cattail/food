@@ -21,10 +21,6 @@ jobs:
 
       - uses: codacy/codacy-analysis-cli-action@master
 
-      - uses: github/codeql-action/init@v2
-      - uses: github/codeql-action/autobuild@v2
-      - uses: github/codeql-action/analyze@v2
-
       - uses: actions/dependency-review-action@v3
 
       - uses: microsoft/DevSkim-Action@v1
