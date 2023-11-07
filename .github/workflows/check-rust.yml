@@ -52,7 +52,10 @@ jobs:
       - uses: actions-rs/tarpaulin@v0.1
         with:
           args: --verbose --all
-          token: ${{secrets.CODECOV_TOKEN}}
+
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - uses: actions-rs/audit-check@v1
         with:

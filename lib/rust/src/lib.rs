@@ -1,2 +1,2 @@
-#![warn(clippy::pedantic)]
-#![warn(clippy::nursery)]
+pub mod bin;
+pub mod log;

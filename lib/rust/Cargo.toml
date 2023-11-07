@@ -1,14 +1,19 @@
 [package]
-name = "food-rs"
+name = "food"
 version = "0.1.0"
 edition = "2021"
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0"
-console = "0.15"
-indicatif = "0.17"
+anyhow = "1"
+clap = "4"
+color-eyre = "0"
+console = "0"
+indicatif = "0"
+serde = { version = "1", features = ["derive"] }
+toml = "0"
+tracing = "0"
+tracing-subscriber = { version = "0", features = ["env-filter"] }
 
 [profile.release]
 lto = "fat"
