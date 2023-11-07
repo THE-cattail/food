@@ -2,3 +2,6 @@
 
 check:
 	ls
+
+distcheck:
+	ls
