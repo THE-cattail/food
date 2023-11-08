@@ -19,8 +19,8 @@ jobs:
           path: ./
           extra_args: --debug --only-verified
 
-      - uses: super-linter/super-linter@v5
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          MULTI_STATUS: false
-          VALIDATE_ALL_CODEBASE: false
+      - uses: raven-actions/actionlint@v1
+
+      - uses: avto-dev/markdown-lint@v1
+        with:
+          args: ./*.md
