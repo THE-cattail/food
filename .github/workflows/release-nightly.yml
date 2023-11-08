@@ -16,11 +16,11 @@ jobs:
 
       - id: date
         run: |
-          echo "{date}={$(date +'%Y-%m-%d')}" >> "$GITHUB_OUTPUT"
+          echo "date=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
 
       - uses: softprops/action-gh-release@v1
         with:
           prerelease: true
-          name: Nightly ${{ steps.date.outputs.date }}
+          name: CatFood for Rust Nightly ${{ steps.date.outputs.date }}
           tag_name: nightly-${{ steps.date.outputs.date }}
           generate_release_notes: true
