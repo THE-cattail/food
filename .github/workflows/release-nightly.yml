@@ -21,6 +21,6 @@ jobs:
       - uses: softprops/action-gh-release@v1
         with:
           prerelease: true
-          name: CatFood for Rust Nightly ${{ steps.date.outputs.date }}
+          name: Nightly ${{ steps.date.outputs.date }}
           tag_name: nightly-${{ steps.date.outputs.date }}
           generate_release_notes: true
