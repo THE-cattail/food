@@ -9,17 +9,31 @@ on:
   workflow_dispatch:
 
 jobs:
-  security:
+  global:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: trufflesecurity/trufflehog@main
         with:
           path: ./
           extra_args: --debug --only-verified
 
+      - uses: super-linter/super-linter@v5
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MULTI_STATUS: false
+          VALIDATE_ALL_CODEBASE: false
+
       - uses: codacy/codacy-analysis-cli-action@master
+        with:
+          output: codacy.sarif
+          format: sarif
+          gh-code-scanning-compat: true
+          max-allowed-issues: 2147483647
+      - uses: github/codeql-action/upload-sarif@main
+        with:
+          sarif_file: codacy.sarif
 
       - uses: actions/dependency-review-action@v3
 

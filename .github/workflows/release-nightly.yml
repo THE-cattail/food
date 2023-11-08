@@ -2,20 +2,27 @@ name: nightly 发布
 
 on:
   schedule:
-    - cron: "0 4 * * *"
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - id: github_release
-        uses: mikepenz/release-changelog-builder-action@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - id: date
+        run: |
+          echo "{date}={$(date +'%Y-%m-%d')}" >> "$GITHUB_OUTPUT"
+
+      - id: changelog
+        uses: metcalfc/changelog-generator@v4.1.0
+        with:
+          mytoken: ${{ github.token }}
 
       - uses: softprops/action-gh-release@v1
         with:
-          body: ${{steps.github_release.outputs.changelog}}
+          prerelease: true
+          name: Nightly ${{ steps.date.outputs.date }}
+          tag_name: nightly-${{ steps.date.outputs.date }}
+          body: ${{ steps.changelog.outputs.changelog }}
