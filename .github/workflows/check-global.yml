@@ -24,20 +24,3 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           MULTI_STATUS: false
           VALIDATE_ALL_CODEBASE: false
-
-      - uses: codacy/codacy-analysis-cli-action@master
-        with:
-          output: codacy.sarif
-          format: sarif
-          gh-code-scanning-compat: true
-          max-allowed-issues: 2147483647
-      - uses: github/codeql-action/upload-sarif@main
-        with:
-          sarif_file: codacy.sarif
-
-      - uses: actions/dependency-review-action@v3
-
-      - uses: microsoft/DevSkim-Action@v1
-      - uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: devskim-results.sarif
