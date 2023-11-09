@@ -1,0 +1,38 @@
+name: 通用静态分析
+
+on:
+  push:
+    branches: ["master", "beta", "stable"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  actionlint:
+    name: Github Action 检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: reviewdog/action-actionlint@v1
+        with:
+          reporter: github-pr-review
+          fail_on_error: true
+
+  markdownlint:
+    name: Markdown 检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: reviewdog/action-actionlint@v1
+        with:
+          reporter: github-pr-review
+          fail_on_error: true
+
+  yamllint:
+    name: YAML 检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: reviewdog/action-yamllint@v1
+        with:
+          reporter: github-pr-review
+          fail_on_error: true
