@@ -1,0 +1,53 @@
+name: Rust 持续集成
+
+on:
+  push:
+    branches: ["master", "beta", "stable"]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  nightly-unit-test:
+    name: nightly 环境单元测试
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --verbose
+
+  stable-unit-test:
+    name: stable 环境单元测试
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --verbose
+
+  nightly-lint:
+    name: nightly 环境静态分析
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+          components: clippy
+      - uses: giraffate/clippy-action@v1
+        with:
+          clippy_flags: -- -Dwarnings
+          workdir: ./lib/rust/
+          reporter: github-pr-review
+          fail_on_error: true
