@@ -1,4 +1,5 @@
-name: Rust 持续集成
+---
+name: Rust CI
 
 on:
   push:
@@ -11,33 +12,41 @@ env:
 
 jobs:
   nightly-unit-test:
-    name: nightly 环境单元测试
+    name: Unit test on nightly rust
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: nightly
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --verbose
+      - name: Run unit tests
+        run: cd ./lib/rust/ && cargo test
 
   stable-unit-test:
-    name: stable 环境单元测试
+    name: Unit test on stable rust
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --verbose
+      - name: Run unit tests
+        run: cd ./lib/rust/ && cargo test
 
-  nightly-lint:
-    name: nightly 环境静态分析
+  fmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+          components: rustfmt
+      - name: Check format
+        run: cargo fmt --all -- --check
+
+  clippy:
+    name: Clippy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -45,9 +54,5 @@ jobs:
         with:
           toolchain: nightly
           components: clippy
-      - uses: giraffate/clippy-action@v1
-        with:
-          clippy_flags: -- -Dwarnings
-          workdir: ./lib/rust/
-          reporter: github-pr-review
-          fail_on_error: true
+      - name: Check clippy
+        run: cargo clippy --all-targets --all-features -- -D warning
