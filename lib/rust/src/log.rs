@@ -16,3 +16,11 @@ pub fn init(crate_name: &'static str) -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn init() {
+        super::init("food_test").unwrap();
+    }
+}

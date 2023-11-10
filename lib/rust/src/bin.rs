@@ -11,14 +11,18 @@ where
     C: for<'de> Deserialize<'de>,
 {
     let args = A::parse();
-
-    let config_path = args.config_path();
-    let config_raw = std::fs::read_to_string(config_path)
-        .wrap_err_with(|| "failed to read config from file `{config_path}`")?;
-    let config = toml::from_str(&config_raw)
-        .wrap_err_with(|| "failed to parse toml config:\n```toml\n{config_raw}\n```")?;
-
+    let config = get_config_from_args(args.config_path())?;
     Ok((args, config))
+}
+
+fn get_config_from_args<C>(path: &Path) -> Result<C>
+where
+    C: for<'de> Deserialize<'de>,
+{
+    let config_raw = std::fs::read_to_string(path)
+        .wrap_err_with(|| "failed to read config from file `{config_path}`")?;
+    toml::from_str(&config_raw)
+        .wrap_err_with(|| "failed to parse toml config:\n```toml\n{config_raw}\n```")
 }
 
 pub trait ConfigPathGetter {
@@ -30,6 +34,7 @@ mod tests {
     use std::path::{Path, PathBuf};
 
     use clap::Parser;
+    use serde::Deserialize;
 
     use super::ConfigPathGetter;
 
@@ -49,13 +54,26 @@ mod tests {
         }
     }
 
-    const TEST_ARGS: [&str; 3] = ["food", "--config", "./config.toml"];
+    #[derive(Debug, PartialEq, Deserialize)]
+    struct Config {
+        test_token: Option<String>,
+    }
 
     #[test]
-    fn config_path_getter() {
-        let args = Args::parse_from(TEST_ARGS);
-        let mut path = PathBuf::from(".");
+    fn get_args_and_config() {
+        let mut path = PathBuf::from("./test/");
+        path.push("conf");
         path.push("config.toml");
+
+        let args = Args::parse_from(["food", "--config", &path.display().to_string()]);
         assert_eq!(args.config_path(), path);
+
+        let config: Config = super::get_config_from_args(args.config_path()).unwrap();
+        assert_eq!(
+            config,
+            Config {
+                test_token: Some("53424C61-1231-43C2-94EC-2ACD74BBEC33".to_owned())
+            }
+        );
     }
 }
