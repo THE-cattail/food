@@ -11,7 +11,7 @@ env:
 
 jobs:
   rust-nightly-unit-test:
-    name: Unit test on nightly rust
+    name: Rust unit test on nightly toolchain
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
           cargo test
 
   rust-stable-unit-test:
-    name: Unit test on stable rust
+    name: Rust unit test on stable toolchain
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
