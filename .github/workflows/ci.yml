@@ -1,4 +1,4 @@
-name: Rust CI
+name: Continuous integration
 
 on:
   push:
@@ -10,7 +10,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  nightly-unit-test:
+  rust-nightly-unit-test:
     name: Unit test on nightly rust
     runs-on: ubuntu-latest
     steps:
@@ -23,7 +23,7 @@ jobs:
           cd ./lib/rust/
           cargo test
 
-  stable-unit-test:
+  rust-stable-unit-test:
     name: Unit test on stable rust
     runs-on: ubuntu-latest
     steps:
@@ -36,8 +36,8 @@ jobs:
           cd ./lib/rust/
           cargo test
 
-  fmt:
-    name: Rustfmt
+  rust-fmt:
+    name: Rust format check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -50,8 +50,8 @@ jobs:
           cd ./lib/rust/
           cargo fmt --all -- --check
 
-  clippy:
-    name: Clippy
+  rust-clippy:
+    name: Rust clippy check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
